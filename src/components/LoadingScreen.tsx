@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Zap } from 'lucide-react';
 import Spline from '@splinetool/react-spline';
 
 interface LoadingScreenProps {
@@ -8,168 +7,137 @@ interface LoadingScreenProps {
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
   const [progress, setProgress] = useState(0);
-  const [showName, setShowName] = useState(false);
-  const [showSubtitle, setShowSubtitle] = useState(false);
+  const [showText, setShowText] = useState(false);
+  const [splineLoaded, setSplineLoaded] = useState(false);
 
   useEffect(() => {
-    // Start name animation after a brief delay
-    const nameTimer = setTimeout(() => setShowName(true), 500);
-    
-    // Start subtitle animation
-    const subtitleTimer = setTimeout(() => setShowSubtitle(true), 2000);
+    // Show text after brief delay
+    const textTimer = setTimeout(() => setShowText(true), 1000);
     
     // Progress bar animation
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(progressInterval);
-          setTimeout(onLoadingComplete, 800);
+          setTimeout(onLoadingComplete, 1000);
           return 100;
         }
-        return prev + 2;
+        return prev + 1.5;
       });
-    }, 50);
+    }, 60);
 
     return () => {
-      clearTimeout(nameTimer);
-      clearTimeout(subtitleTimer);
+      clearTimeout(textTimer);
       clearInterval(progressInterval);
     };
   }, [onLoadingComplete]);
 
+  const handleSplineLoad = () => {
+    setSplineLoaded(true);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 flex items-center justify-center overflow-hidden">
-      {/* Animated Background Elements */}
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-blue-950 to-purple-950 overflow-hidden">
+      {/* Ambient Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl animate-pulse delay-500" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl animate-pulse delay-500" />
       </div>
 
-      {/* Floating Particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-blue-400/60 rounded-full animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${3 + Math.random() * 4}s`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Main Content */}
-      <div className="relative z-10 text-center">
-        {/* 3D Model */}
-        <div className="mb-8 relative w-80 h-80 mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-600/20 rounded-full animate-pulse" />
-          <div className="relative w-full h-full rounded-full overflow-hidden">
-            <Spline scene="https://prod.spline.design/lcv8oS0aFG8HFeaB/scene.splinecode" />
+      {/* Main 3D Scene Container */}
+      <div className="relative w-full h-full flex items-center justify-center">
+        {/* Spline 3D Model - Guy on Staircase */}
+        <div className="relative w-full h-full max-w-4xl max-h-screen">
+          <div className={`w-full h-full transition-opacity duration-1000 ${splineLoaded ? 'opacity-100' : 'opacity-0'}`}>
+            <Spline 
+              scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode"
+              onLoad={handleSplineLoad}
+            />
           </div>
-          {/* Fallback animated icon if 3D model fails to load */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-500">
-            <div className="w-20 h-20 relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-20 animate-ping" />
-              <div className="absolute inset-2 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-40 animate-ping delay-75" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Zap className="h-10 w-10 text-blue-400 animate-pulse" />
+          
+          {/* Loading fallback while Spline loads */}
+          {!splineLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative">
+                <div className="w-20 h-20 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                <div className="absolute inset-0 w-20 h-20 border-4 border-purple-500/20 border-b-purple-500 rounded-full animate-spin" 
+                     style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
               </div>
             </div>
+          )}
+        </div>
+
+        {/* Overlay Content */}
+        <div className="absolute inset-0 flex flex-col justify-between p-8 pointer-events-none">
+          {/* Top Section - Name and Title */}
+          <div className={`text-center transition-all duration-1500 ${showText ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
+                JAI NARULA
+              </span>
+            </h1>
+            <p className="text-lg md:text-xl text-gray-300 font-light tracking-wide">
+              Data Analyst & Dashboard Designer
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mt-4 animate-pulse" />
           </div>
-        </div>
 
-        {/* Animated Name */}
-        <div className="mb-6 overflow-hidden">
-          <h1 className={`text-6xl md:text-8xl font-bold transition-all duration-2000 ${
-            showName 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-0 translate-y-20'
-          }`}>
-            <span className="inline-block">
-              {'JAI'.split('').map((letter, index) => (
-                <span
-                  key={index}
-                  className="inline-block bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-bounce-in"
-                  style={{ 
-                    animationDelay: `${showName ? index * 200 + 500 : 0}ms`,
-                    animationFillMode: 'both'
-                  }}
+          {/* Bottom Section - Progress and Loading Info */}
+          <div className={`transition-all duration-1000 delay-500 ${showText ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {/* Progress Bar */}
+            <div className="max-w-md mx-auto mb-6">
+              <div className="flex justify-between text-sm text-gray-400 mb-3">
+                <span>Loading Portfolio</span>
+                <span>{Math.round(progress)}%</span>
+              </div>
+              <div className="w-full bg-gray-800/50 rounded-full h-2 overflow-hidden backdrop-blur-sm">
+                <div 
+                  className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full transition-all duration-300 ease-out relative"
+                  style={{ width: `${progress}%` }}
                 >
-                  {letter}
-                </span>
-              ))}
-            </span>
-            <span className="inline-block ml-4">
-              {'NARULA'.split('').map((letter, index) => (
-                <span
-                  key={index}
-                  className="inline-block bg-gradient-to-r from-purple-400 via-pink-500 to-blue-400 bg-clip-text text-transparent animate-bounce-in"
-                  style={{ 
-                    animationDelay: `${showName ? (index + 3) * 200 + 800 : 0}ms`,
-                    animationFillMode: 'both'
-                  }}
-                >
-                  {letter}
-                </span>
-              ))}
-            </span>
-          </h1>
-        </div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+                </div>
+              </div>
+            </div>
 
-        {/* Animated Subtitle */}
-        <div className={`mb-12 transition-all duration-1000 delay-500 ${
-          showSubtitle 
-            ? 'opacity-100 translate-y-0' 
-            : 'opacity-0 translate-y-10'
-        }`}>
-          <p className="text-xl md:text-2xl text-gray-300 font-light tracking-wide">
-            Data Analyst & Dashboard Designer
-          </p>
-          <div className="w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mt-4 animate-pulse" />
-        </div>
-
-        {/* Progress Bar */}
-        <div className="w-80 max-w-sm mx-auto">
-          <div className="flex justify-between text-sm text-gray-400 mb-2">
-            <span>Loading Portfolio</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="w-full bg-gray-700/50 rounded-full h-2 overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full transition-all duration-300 ease-out relative"
-              style={{ width: `${progress}%` }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+            {/* Loading Status */}
+            <div className="text-center">
+              <div className="flex justify-center space-x-2 mb-4">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"
+                    style={{ animationDelay: `${i * 300}ms` }}
+                  />
+                ))}
+              </div>
+              <p className="text-sm text-gray-400">
+                {progress < 30 && "Initializing 3D environment..."}
+                {progress >= 30 && progress < 60 && "Loading interactive elements..."}
+                {progress >= 60 && progress < 90 && "Preparing portfolio content..."}
+                {progress >= 90 && "Almost ready!"}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Loading Dots */}
-        <div className="flex justify-center space-x-2 mt-8">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"
-              style={{ animationDelay: `${i * 200}ms` }}
-            />
-          ))}
-        </div>
+        {/* Subtle Corner Decorations */}
+        <div className="absolute top-6 left-6 w-12 h-12 border-l-2 border-t-2 border-blue-500/20 pointer-events-none animate-pulse" />
+        <div className="absolute top-6 right-6 w-12 h-12 border-r-2 border-t-2 border-purple-500/20 pointer-events-none animate-pulse delay-500" />
+        <div className="absolute bottom-6 left-6 w-12 h-12 border-l-2 border-b-2 border-purple-500/20 pointer-events-none animate-pulse delay-1000" />
+        <div className="absolute bottom-6 right-6 w-12 h-12 border-r-2 border-b-2 border-blue-500/20 pointer-events-none animate-pulse delay-1500" />
       </div>
 
-      {/* Animated Lines */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent animate-pulse" />
-        <div className="absolute bottom-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent animate-pulse delay-1000" />
-        <div className="absolute left-1/4 top-0 h-full w-px bg-gradient-to-b from-transparent via-cyan-500/20 to-transparent animate-pulse delay-500" />
-        <div className="absolute right-1/4 top-0 h-full w-px bg-gradient-to-b from-transparent via-pink-500/20 to-transparent animate-pulse delay-1500" />
+      {/* Ambient Light Effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-32 bg-gradient-to-b from-blue-400/30 to-transparent animate-pulse" />
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-32 bg-gradient-to-t from-purple-400/30 to-transparent animate-pulse delay-1000" />
+        <div className="absolute left-0 top-1/2 transform -translate-y-1/2 h-px w-32 bg-gradient-to-r from-cyan-400/30 to-transparent animate-pulse delay-500" />
+        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 h-px w-32 bg-gradient-to-l from-pink-400/30 to-transparent animate-pulse delay-1500" />
       </div>
     </div>
   );
 };
 
 export default LoadingScreen;
- 
