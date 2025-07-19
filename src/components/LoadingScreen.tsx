@@ -68,7 +68,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
         <div className="mb-8 relative w-80 h-80 mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-600/20 rounded-full animate-pulse" />
           <div className="relative w-full h-full rounded-full overflow-hidden">
-            <Spline scene="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode" />
+            <Spline scene="https://prod.spline.design/lcv8oS0aFG8HFeaB/scene.splinecode" />
           </div>
           {/* Fallback animated icon if 3D model fails to load */}
           <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-500">
