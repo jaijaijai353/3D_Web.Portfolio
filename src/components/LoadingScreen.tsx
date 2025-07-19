@@ -42,7 +42,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
       <div className="absolute inset-0">
         <div className={`w-full h-full transition-opacity duration-1000 ${splineLoaded ? 'opacity-100' : 'opacity-0'}`}>
           <Spline 
-            scene="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode"
+            scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode"
             onLoad={handleSplineLoad}
           />
         </div>
