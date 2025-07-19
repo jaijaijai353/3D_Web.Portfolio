@@ -436,6 +436,20 @@ html {
 .animate-enhanced-shimmer {
   animation: enhanced-shimmer 2s ease-in-out infinite;
 }
+
+/* Width expansion animation */
+@keyframes width-expand {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-width-expand {
+  animation: width-expand 2s ease-out forwards;
+}
 /* Mobile Menu Animations */
 @keyframes slideInFromRight {
   from {
