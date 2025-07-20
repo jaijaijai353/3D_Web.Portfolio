@@ -79,6 +79,7 @@ const Hero: React.FC = () => {
           align-items: flex-start;
           text-align: left;
           max-width: 600px;
+          margin: 0 auto;
           background: rgba(0, 0, 0, 0.4);
           backdrop-filter: blur(10px);
           border-radius: 1rem;
@@ -89,9 +90,10 @@ const Hero: React.FC = () => {
         @media(max-width: 767px) {
           .hero-left {
             order: 2;
+            margin-top: 0 !important;
+            padding-top: 0 !important;
             align-items: center;
             text-align: center;
-            margin-top: 0; /* 🛠️ Removed space */
           }
         }
 
@@ -106,9 +108,8 @@ const Hero: React.FC = () => {
           .hero-right {
             order: 1;
             width: 100%;
-            height: 1800px;
-            margin-top: -2rem; /* 🛠️ Lowered spline slightly */
-            margin-bottom: -1rem; /* 🛠️ Pull closer to text */
+            height: 1800px; /* Tall portrait height */
+            margin-bottom: -5rem; /* Pull text up */
           }
         }
 
@@ -195,7 +196,7 @@ const Hero: React.FC = () => {
       `}</style>
 
       <div className="hero-container">
-        {/* ✅ TEXT FIRST (Left on desktop) */}
+        {/* ✅ TEXT LEFT ON DESKTOP / BELOW ON MOBILE */}
         <div className="hero-left">
           <h1>Jai Narula</h1>
           <div
@@ -228,7 +229,7 @@ const Hero: React.FC = () => {
           </div>
         </div>
 
-        {/* ✅ SPLINE SECOND (Right on desktop) */}
+        {/* ✅ SPLINE RIGHT ON DESKTOP / ABOVE ON MOBILE */}
         <div className="hero-right">
           <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
             <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
