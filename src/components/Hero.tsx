@@ -98,8 +98,8 @@ const Hero: React.FC = () => {
         }
 
         .hero-right {
-          flex: 1;
-          max-width: 800px;
+          flex: 2;
+          width: 1600px; /* Doubled width */
           height: 800px;
           margin: 0 auto;
         }
@@ -116,7 +116,7 @@ const Hero: React.FC = () => {
         .hero-right canvas {
           width: 100% !important;
           height: 100% !important;
-          transform: scale(0.7); /* Zoomed out more */
+          transform: scale(0.7); /* Zoomed out */
           transform-origin: center;
         }
 
