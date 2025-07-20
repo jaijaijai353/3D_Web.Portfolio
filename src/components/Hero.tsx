@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import Spline from "@splinetool/react-spline";
 import { ChevronDown } from "lucide-react";
 
@@ -31,14 +31,22 @@ const Hero: React.FC = () => {
         setSkillIndex((prev) => (prev + 1) % skills.length);
         setColor(randomColor());
         setFade(true);
-      }, 500); // fade out time
-    }, 2500); // total interval
-
+      }, 500);
+    }, 2500);
     return () => clearInterval(interval);
   }, []);
 
-  const scrollToAbout = () => {
-    document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" });
+  const scrollToSection = (id: string) => {
+    document.querySelector(`#${id}`)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const downloadResume = () => {
+    const link = document.createElement("a");
+    link.href = "/JAI_RESUME_2025.pdf";
+    link.download = "JAI_RESUME_2025.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -52,15 +60,17 @@ const Hero: React.FC = () => {
           flex-direction: column;
           padding: 2rem;
           box-sizing: border-box;
+          justify-content: center;
+          align-items: center;
         }
+
         @media(min-width: 768px) {
           .hero-container {
             flex-direction: row;
-            justify-content: center;
-            align-items: center;
             padding: 4rem;
           }
         }
+
         .hero-left {
           flex: 1;
           display: flex;
@@ -70,7 +80,13 @@ const Hero: React.FC = () => {
           text-align: left;
           max-width: 600px;
           margin: 0 auto;
+          background: rgba(0, 0, 0, 0.4);
+          backdrop-filter: blur(10px);
+          border-radius: 1rem;
+          padding: 1.5rem;
+          animation: slideIn 1s ease-in-out;
         }
+
         @media(max-width: 767px) {
           .hero-left {
             order: 2;
@@ -79,41 +95,52 @@ const Hero: React.FC = () => {
             text-align: center;
           }
         }
+
         .hero-right {
           flex: 1;
           max-width: 600px;
           height: 600px;
           margin: 0 auto;
         }
+
         @media(max-width: 767px) {
           .hero-right {
             order: 1;
             width: 100%;
-            height: 600px;
+            height: 1200px;
+            margin-top: -6rem;
           }
         }
+
         h1 {
           font-size: 3rem;
           margin-bottom: 0.5rem;
           font-weight: 900;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
+
         @media(min-width: 768px) {
           h1 {
             font-size: 4.5rem;
           }
         }
+
         .skill-text {
           margin-top: 0.5rem;
           font-size: 1.75rem;
           font-weight: 600;
           transition: opacity 0.5s ease;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
         }
+
         .fade-in {
           opacity: 1;
         }
+
         .fade-out {
           opacity: 0;
         }
+
         .description {
           margin-top: 1rem;
           font-size: 1.25rem;
@@ -121,6 +148,7 @@ const Hero: React.FC = () => {
           color: #ccc;
           max-width: 400px;
         }
+
         .scroll-down-btn {
           margin-top: 3rem;
           cursor: pointer;
@@ -128,11 +156,29 @@ const Hero: React.FC = () => {
           color: #888;
           transition: color 0.3s ease;
         }
+
         .scroll-down-btn:hover {
           color: white;
           transform: scale(1.1);
           animation: none;
         }
+
+        .cta-button {
+          margin-top: 2rem;
+          padding: 0.75rem 1.5rem;
+          background: #fff;
+          color: #000;
+          border: none;
+          border-radius: 8px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: transform 0.3s;
+        }
+
+        .cta-button:hover {
+          transform: scale(1.05);
+        }
+
         @keyframes bounce {
           0%, 100% {
             transform: translateY(0);
@@ -141,10 +187,14 @@ const Hero: React.FC = () => {
             transform: translateY(10px);
           }
         }
+
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
       `}</style>
 
       <div className="hero-container">
-        {/* Left side with text */}
         <div className="hero-left">
           <h1>Jai Narula</h1>
           <div
@@ -157,21 +207,19 @@ const Hero: React.FC = () => {
             Data Analyst | SQL | Power BI | Python | Excel
           </p>
 
+          <button className="cta-button" onClick={downloadResume}>
+            Download Resume
+          </button>
+
           <div
             className="scroll-down-btn"
-            onClick={() => {
-              document
-                .querySelector("#about")
-                ?.scrollIntoView({ behavior: "smooth" });
-            }}
+            onClick={() => scrollToSection("about")}
             aria-label="Scroll to about section"
             role="button"
             tabIndex={0}
             onKeyPress={(e) => {
               if (e.key === "Enter" || e.key === " ") {
-                document
-                  .querySelector("#about")
-                  ?.scrollIntoView({ behavior: "smooth" });
+                scrollToSection("about");
               }
             }}
           >
@@ -179,9 +227,10 @@ const Hero: React.FC = () => {
           </div>
         </div>
 
-        {/* Right side with Spline */}
         <div className="hero-right">
-          <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
+          <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
+            <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
+          </Suspense>
         </div>
       </div>
     </>
@@ -189,3 +238,4 @@ const Hero: React.FC = () => {
 };
 
 export default Hero;
+
