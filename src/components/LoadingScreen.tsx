@@ -5,11 +5,6 @@ interface LoadingScreenProps {
   onLoadingComplete: () => void;
 }
 
-const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
-  const [progress, setProgress] = useState(0);
-  const [showName, setShowName] = useState(false);
-  const [showSubtitle, setShowSubtitle] = useState(false);
-  const [splineLoaded, setSplineLoaded] = useState(false);
 
   useEffect(() => {
     // Start name animation after a brief delay
@@ -41,14 +36,6 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
     <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 flex items-center justify-center overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className={`w-full h-full transition-opacity duration-1000 spline-optimized loading-spline-container ${splineLoaded ? 'opacity-100' : 'opacity-0'}`}>
-          style={{ 
-            height: '200vh', 
-            top: '-50vh',
-            transform: 'scale(1.2)',
-            transformOrigin: 'center center'
-          }}>
-        </div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl animate-pulse delay-500" />
       </div>
@@ -169,11 +156,6 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent animate-pulse" />
         <div className="absolute bottom-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent animate-pulse delay-1000" />
-        <div className="absolute left-1/4 top-0 h-full w-px bg-gradient-to-b from-transparent via-cyan-500/20 to-transparent animate-pulse delay-500" />
-        <div className="absolute right-1/4 top-0 h-full w-px bg-gradient-to-b from-transparent via-pink-500/20 to-transparent animate-pulse delay-1500" />
-      </div>
-    </div>
-  );
 };
 
 export default LoadingScreen;
