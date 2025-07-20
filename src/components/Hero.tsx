@@ -99,8 +99,8 @@ const Hero: React.FC = () => {
 
         .hero-right {
           flex: 1;
-          max-width: 600px;
-          height: 600px;
+          max-width: 800px;
+          height: 800px;
           margin: 0 auto;
         }
 
@@ -108,13 +108,15 @@ const Hero: React.FC = () => {
           .hero-right {
             order: 1;
             width: 100%;
-            height: 1800px; /* Tall portrait height */
+            height: 1800px;
             margin-bottom: -5rem;
           }
         }
 
         .hero-right canvas {
-          transform: scale(0.8);
+          width: 100% !important;
+          height: 100% !important;
+          transform: scale(0.7); /* Zoomed out more */
           transform-origin: center;
         }
 
