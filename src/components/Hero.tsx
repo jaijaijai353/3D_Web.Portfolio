@@ -57,18 +57,19 @@ const Hero: React.FC = () => {
           color: white;
           min-height: 100vh;
           display: flex;
-          flex-direction: column;
-          padding: 2rem;
-          box-sizing: border-box;
           justify-content: center;
           align-items: center;
+          padding: 2rem;
+          box-sizing: border-box;
         }
 
-        @media(min-width: 768px) {
-          .hero-container {
-            flex-direction: row;
-            padding: 4rem;
-          }
+        .hero-inner {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          max-width: 1200px;
         }
 
         .hero-left {
@@ -79,7 +80,6 @@ const Hero: React.FC = () => {
           align-items: flex-start;
           text-align: left;
           max-width: 600px;
-          margin: 0 auto;
           background: rgba(0, 0, 0, 0.4);
           backdrop-filter: blur(10px);
           border-radius: 1rem;
@@ -87,28 +87,45 @@ const Hero: React.FC = () => {
           animation: slideIn 1s ease-in-out;
         }
 
+        .hero-right {
+          flex: 1;
+          max-width: 600px;
+          height: 600px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
         @media(max-width: 767px) {
+          .hero-inner {
+            flex-direction: column;
+          }
+
+          .hero-right {
+            order: 1;
+            height: 400px;
+            width: 100%;
+            transform: scale(1.1);
+            transform-origin: top center;
+          }
+
           .hero-left {
             order: 2;
             margin-top: 1rem;
             align-items: center;
             text-align: center;
           }
-        }
 
-        .hero-right {
-          flex: 1;
-          max-width: 600px;
-          height: 600px;
-          margin: 0 auto;
-        }
+          h1 {
+            font-size: 2.5rem;
+          }
 
-        @media(max-width: 767px) {
-          .hero-right {
-            order: 1;
-            width: 100%;
-            height: 1200px;
-            margin-top: -6rem;
+          .skill-text {
+            font-size: 1.25rem;
+          }
+
+          .description {
+            font-size: 1rem;
           }
         }
 
@@ -195,42 +212,44 @@ const Hero: React.FC = () => {
       `}</style>
 
       <div className="hero-container">
-        <div className="hero-left">
-          <h1>Jai Narula</h1>
-          <div
-            className={`skill-text ${fade ? "fade-in" : "fade-out"}`}
-            style={{ color }}
-          >
-            I am {skills[skillIndex]}
+        <div className="hero-inner">
+          <div className="hero-right">
+            <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
+              <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
+            </Suspense>
           </div>
-          <p className="description">
-            Data Analyst | SQL | Power BI | Python | Excel
-          </p>
 
-          <button className="cta-button" onClick={downloadResume}>
-            Download Resume
-          </button>
+          <div className="hero-left">
+            <h1>Jai Narula</h1>
+            <div
+              className={`skill-text ${fade ? "fade-in" : "fade-out"}`}
+              style={{ color }}
+            >
+              I am {skills[skillIndex]}
+            </div>
+            <p className="description">
+              Data Analyst | SQL | Power BI | Python | Excel
+            </p>
 
-          <div
-            className="scroll-down-btn"
-            onClick={() => scrollToSection("about")}
-            aria-label="Scroll to about section"
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                scrollToSection("about");
-              }
-            }}
-          >
-            <ChevronDown size={32} />
+            <button className="cta-button" onClick={downloadResume}>
+              Download Resume
+            </button>
+
+            <div
+              className="scroll-down-btn"
+              onClick={() => scrollToSection("about")}
+              aria-label="Scroll to about section"
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  scrollToSection("about");
+                }
+              }}
+            >
+              <ChevronDown size={32} />
+            </div>
           </div>
-        </div>
-
-        <div className="hero-right">
-          <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
-            <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
-          </Suspense>
         </div>
       </div>
     </>
@@ -238,4 +257,3 @@ const Hero: React.FC = () => {
 };
 
 export default Hero;
-
