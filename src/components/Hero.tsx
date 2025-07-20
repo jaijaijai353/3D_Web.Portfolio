@@ -57,19 +57,17 @@ const Hero: React.FC = () => {
           color: white;
           min-height: 100vh;
           display: flex;
-          flex-direction: row;
-          padding: 4rem;
+          flex-direction: column;
+          padding: 2rem;
           box-sizing: border-box;
           justify-content: center;
           align-items: center;
         }
 
-        @media(max-width: 767px) {
+        @media(min-width: 768px) {
           .hero-container {
-            flex-direction: column;
-            padding: 2rem 1rem;
-            align-items: center;
-            text-align: center;
+            flex-direction: row;
+            padding: 4rem;
           }
         }
 
@@ -92,11 +90,9 @@ const Hero: React.FC = () => {
         @media(max-width: 767px) {
           .hero-left {
             order: 2;
-            margin-top: 2rem;
+            margin-top: 1rem;
             align-items: center;
             text-align: center;
-            max-width: 100%;
-            padding: 1rem;
           }
         }
 
@@ -111,8 +107,8 @@ const Hero: React.FC = () => {
           .hero-right {
             order: 1;
             width: 100%;
-            height: 1800px; /* tripled height */
-            margin-top: 0;
+            height: 1800px; /* Tripled height for mobile */
+            margin-top: -6rem;
           }
         }
 
@@ -199,12 +195,7 @@ const Hero: React.FC = () => {
       `}</style>
 
       <div className="hero-container">
-        <div className="hero-right">
-          <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
-            <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
-          </Suspense>
-        </div>
-
+        {/* ✅ TEXT FIRST (Left on desktop) */}
         <div className="hero-left">
           <h1>Jai Narula</h1>
           <div
@@ -236,10 +227,16 @@ const Hero: React.FC = () => {
             <ChevronDown size={32} />
           </div>
         </div>
+
+        {/* ✅ SPLINE SECOND (Right on desktop) */}
+        <div className="hero-right">
+          <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
+            <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
+          </Suspense>
+        </div>
       </div>
     </>
   );
 };
 
 export default Hero;
-
