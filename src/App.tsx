@@ -21,7 +21,6 @@ function App() {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    // Trigger a tiny smooth scroll to activate smooth scroll behavior on page load
     window.scrollTo({ top: 1, left: 0, behavior: 'smooth' });
     setTimeout(() => {
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -58,11 +57,16 @@ function App() {
         <ScrollAnimations />
         <SideScreenAnimations />
         <Header />
+
         <main className="relative z-10">
-          <Hero />
+          <section id="hero" className="scroll-mt-20">
+            <Hero />
+          </section>
 
           <LazySection loadingComponent={<SkeletonLoader type="text" count={3} />}>
-            <About />
+            <section id="about" className="scroll-mt-20">
+              <About />
+            </section>
           </LazySection>
 
           <LazySection
@@ -76,7 +80,9 @@ function App() {
               </div>
             }
           >
-            <Skills />
+            <section id="skills" className="scroll-mt-20">
+              <Skills />
+            </section>
           </LazySection>
 
           <LazySection
@@ -90,7 +96,9 @@ function App() {
               </div>
             }
           >
-            <Experience />
+            <section id="experience" className="scroll-mt-20">
+              <Experience />
+            </section>
           </LazySection>
 
           <LazySection
@@ -104,7 +112,9 @@ function App() {
               </div>
             }
           >
-            <Projects />
+            <section id="projects" className="scroll-mt-20">
+              <Projects />
+            </section>
           </LazySection>
 
           <LazySection
@@ -121,7 +131,9 @@ function App() {
               </div>
             }
           >
-            <Education />
+            <section id="education" className="scroll-mt-20">
+              <Education />
+            </section>
           </LazySection>
 
           <LazySection
@@ -138,7 +150,9 @@ function App() {
               </div>
             }
           >
-            <Contact />
+            <section id="contact" className="scroll-mt-20">
+              <Contact />
+            </section>
           </LazySection>
         </main>
       </div>
