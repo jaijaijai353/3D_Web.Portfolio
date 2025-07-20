@@ -2,13 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import LoadingScreen from './components/LoadingScreen';
 import Header from './components/Header';
-import Hero from './components/Hero';
-import About from './components/About';
-import Skills from './components/Skills';
-import Experience from './components/Experience';
-import Projects from './components/Projects';
-import Education from './components/Education';
-import Contact from './components/Contact';
+import { Hero, About, Skills, Experience, Projects, Education, Contact } from './components/Sections';
 import ParticleBackground from './components/ParticleBackground';
 import ScrollAnimations from './components/ScrollAnimations';
 import SideScreenAnimations from './components/SideScreenAnimations';
@@ -21,7 +15,6 @@ function App() {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    // Trigger a tiny smooth scroll to activate smooth scroll behavior on page load
     window.scrollTo({ top: 1, left: 0, behavior: 'smooth' });
     setTimeout(() => {
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -48,16 +41,15 @@ function App() {
           showContent ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        {/* === Spline 3D Scene === */}
         <div className="absolute top-0 left-0 w-full h-screen z-0">
           <Spline scene="https://prod.spline.design/lcv8oS0aFG8HFeaB/scene.splinecode" />
         </div>
 
-        {/* === Animated Effects and Main Content === */}
         <ParticleBackground />
         <ScrollAnimations />
         <SideScreenAnimations />
         <Header />
+
         <main className="relative z-10">
           <Hero />
 
