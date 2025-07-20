@@ -21,7 +21,6 @@ function App() {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    // Trigger a tiny smooth scroll to activate smooth scroll behavior on page load
     window.scrollTo({ top: 1, left: 0, behavior: 'smooth' });
     setTimeout(() => {
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -48,18 +47,17 @@ function App() {
           showContent ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        {/* === Spline 3D Scene === */}
-        <div className="absolute top-0 left-0 w-full h-screen z-0">
+        {/* Spline with responsive spacing */}
+        <div className="absolute w-full h-screen z-0 top-16 sm:top-0">
           <Spline scene="https://prod.spline.design/lcv8oS0aFG8HFeaB/scene.splinecode" />
         </div>
 
-        {/* === Animated Effects and Main Content === */}
         <ParticleBackground />
         <ScrollAnimations />
         <SideScreenAnimations />
         <Header />
 
-        <main className="relative z-10">
+        <main className="relative z-10 scroll-smooth">
           <section id="hero">
             <Hero />
           </section>
