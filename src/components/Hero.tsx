@@ -101,19 +101,19 @@ const Hero: React.FC = () => {
             flex-direction: column;
           }
 
+          .hero-left {
+            order: 2;
+            margin-top: 1rem;
+            align-items: center;
+            text-align: center;
+          }
+
           .hero-right {
             order: 1;
             height: 400px;
             width: 100%;
             transform: scale(1.1);
             transform-origin: top center;
-          }
-
-          .hero-left {
-            order: 2;
-            margin-top: 1rem;
-            align-items: center;
-            text-align: center;
           }
 
           h1 {
@@ -213,12 +213,6 @@ const Hero: React.FC = () => {
 
       <div className="hero-container">
         <div className="hero-inner">
-          <div className="hero-right">
-            <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
-              <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
-            </Suspense>
-          </div>
-
           <div className="hero-left">
             <h1>Jai Narula</h1>
             <div
@@ -249,6 +243,12 @@ const Hero: React.FC = () => {
             >
               <ChevronDown size={32} />
             </div>
+          </div>
+
+          <div className="hero-right">
+            <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
+              <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
+            </Suspense>
           </div>
         </div>
       </div>
