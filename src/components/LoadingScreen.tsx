@@ -1,248 +1,167 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as PIXI from 'pixi.js';
-import { gsap } from 'gsap';
-import { Howl } from 'howler';
+import React, { useEffect, useState } from 'react';
+import { Zap } from 'lucide-react';
 
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+interface LoadingScreenProps {
+  onLoadingComplete: () => void;
+}
 
-const LoadingScreen: React.FC = () => {
-  const canvasRef = useRef<HTMLDivElement>(null);
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
   const [progress, setProgress] = useState(0);
-  const [skip, setSkip] = useState(false);
+  const [showName, setShowName] = useState(false);
+  const [showSubtitle, setShowSubtitle] = useState(false);
 
   useEffect(() => {
-    const app = new PIXI.Application({
-      resizeTo: window,
-      backgroundAlpha: 0,
-      antialias: true,
-    });
-
-    if (canvasRef.current) {
-      canvasRef.current.innerHTML = '';
-      canvasRef.current.appendChild(app.view as HTMLCanvasElement);
-    }
-
-    const scene = new PIXI.Container();
-    app.stage.addChild(scene);
-
-    // 🎞️ Cinematic Black Bars
-    const topBar = new PIXI.Graphics();
-    topBar.beginFill(0x000000, 0.6).drawRect(0, 0, window.innerWidth, 60).endFill();
-    scene.addChild(topBar);
-
-    const bottomBar = new PIXI.Graphics();
-    bottomBar.beginFill(0x000000, 0.6).drawRect(0, window.innerHeight - 60, window.innerWidth, 60).endFill();
-    scene.addChild(bottomBar);
-
-    // 🌅 Animated Gradient Sky
-    const sky = new PIXI.Graphics();
-    sky.beginFill(0xffe4b5).drawRect(0, 0, window.innerWidth, window.innerHeight).endFill();
-    scene.addChild(sky);
-    gsap.to(sky, {
-      tint: 0xb0c4de,
-      duration: 6,
-      repeat: -1,
-      yoyo: true,
-    });
-
-    // ⛰️ Parallax Hills
-    const hills = new PIXI.Graphics();
-    hills.beginFill(0x7fa57f);
-    hills.moveTo(0, window.innerHeight * 0.75);
-    hills.quadraticCurveTo(window.innerWidth * 0.3, window.innerHeight * 0.65, window.innerWidth * 0.6, window.innerHeight * 0.75);
-    hills.quadraticCurveTo(window.innerWidth * 0.8, window.innerHeight * 0.8, window.innerWidth, window.innerHeight * 0.75);
-    hills.lineTo(window.innerWidth, window.innerHeight);
-    hills.lineTo(0, window.innerHeight);
-    hills.endFill();
-    scene.addChild(hills);
-
-    // 🛖 Hut
-    const hut = new PIXI.Graphics();
-    hut.beginFill(0x8b5e3c).drawRect(0, 0, 60, 40).endFill();
-    hut.beginFill(0x5a3d27).moveTo(0, 0).lineTo(30, -25).lineTo(60, 0).endFill();
-    hut.x = window.innerWidth * 0.25;
-    hut.y = window.innerHeight * 0.7;
-    scene.addChild(hut);
-
-    // 🔥 Campfire
-    const fire = new PIXI.Graphics();
-    fire.beginFill(0xff4500).drawCircle(0, 0, 12).endFill();
-    fire.x = hut.x + 80;
-    fire.y = hut.y + 30;
-    scene.addChild(fire);
-    if (!prefersReducedMotion) {
-      gsap.to(fire.scale, {
-        x: 1.2,
-        y: 1.2,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        duration: 0.5,
+    // Start name animation after a brief delay
+    const nameTimer = setTimeout(() => setShowName(true), 500);
+    
+    // Start subtitle animation
+    const subtitleTimer = setTimeout(() => setShowSubtitle(true), 2000);
+    
+    // Progress bar animation
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(progressInterval);
+          setTimeout(onLoadingComplete, 800);
+          return 100;
+        }
+        return prev + 2;
       });
-    }
-
-    // 🌬️ Smoke Loading Progress
-    const smoke = new PIXI.Graphics();
-    smoke.beginFill(0xffffff, 0.3).drawEllipse(0, 0, 10, 20).endFill();
-    smoke.x = hut.x + 50;
-    smoke.y = hut.y - 10;
-    scene.addChild(smoke);
-
-    gsap.to(smoke, {
-      y: smoke.y - 50,
-      alpha: 0,
-      duration: 4,
-      repeat: -1,
-      onRepeat: () => {
-        smoke.y = hut.y - 10;
-        smoke.alpha = 0.3;
-      },
-    });
-
-    // 👨 Man
-    const man = new PIXI.Graphics();
-    man.beginFill(0x3a3a3a).drawRect(0, 0, 10, 25).endFill();
-    man.x = fire.x + 20;
-    man.y = fire.y - 20;
-    scene.addChild(man);
-
-    // 🌿 Tree and grass
-    const tree = new PIXI.Graphics();
-    tree.beginFill(0x3a5f0b).drawCircle(0, 0, 30).endFill();
-    tree.x = window.innerWidth * 0.7;
-    tree.y = window.innerHeight * 0.67;
-    scene.addChild(tree);
-
-    if (!prefersReducedMotion) {
-      gsap.to(tree, {
-        rotation: 0.05,
-        duration: 3,
-        repeat: -1,
-        yoyo: true,
-      });
-    }
-
-    // 🐦 Birds
-    const bird = new PIXI.Graphics();
-    bird.beginFill(0x000000).moveTo(0, 0).lineTo(5, -5).lineTo(10, 0).endFill();
-    scene.addChild(bird);
-    bird.x = -20;
-    bird.y = 90;
-    gsap.to(bird, {
-      x: window.innerWidth + 20,
-      repeat: -1,
-      ease: 'none',
-      duration: 12,
-      onRepeat: () => {
-        bird.x = -20;
-        bird.y = 80 + Math.random() * 40;
-      },
-    });
-
-    // ✨ Particles
-    for (let i = 0; i < 30; i++) {
-      const particle = new PIXI.Graphics();
-      particle.beginFill(0xffffff, 0.05).drawCircle(0, 0, Math.random() * 1.5 + 0.5).endFill();
-      particle.x = Math.random() * window.innerWidth;
-      particle.y = Math.random() * window.innerHeight;
-      scene.addChild(particle);
-
-      gsap.to(particle, {
-        y: particle.y - 20,
-        alpha: 0,
-        duration: 5 + Math.random() * 5,
-        repeat: -1,
-        delay: Math.random() * 5,
-        onRepeat: () => {
-          particle.y = Math.random() * window.innerHeight;
-          particle.alpha = 0.05;
-        },
-      });
-    }
-
-    // 🌞 Greeting
-    const style = new PIXI.TextStyle({
-      fontFamily: 'serif',
-      fontSize: 36,
-      fill: 'white',
-      dropShadow: true,
-      dropShadowBlur: 4,
-      dropShadowAlpha: 0.3,
-    });
-    const greeting = new PIXI.Text(`Good morning, Jai 🌄`, style);
-    greeting.x = window.innerWidth / 2 - 140;
-    greeting.y = 70;
-    scene.addChild(greeting);
-
-    // 📼 Vintage Loading Bar
-    const barBg = new PIXI.Graphics();
-    barBg.beginFill(0x3a2e1f).drawRoundedRect(0, 0, 300, 20, 10).endFill();
-    barBg.x = window.innerWidth / 2 - 150;
-    barBg.y = window.innerHeight - 80;
-    scene.addChild(barBg);
-
-    const barFill = new PIXI.Graphics();
-    barFill.beginFill(0xffa500).drawRoundedRect(0, 0, 0, 20, 10).endFill();
-    barFill.x = barBg.x;
-    barFill.y = barBg.y;
-    scene.addChild(barFill);
-
-    const updateProgress = () => {
-      const newProgress = Math.min(progress + Math.random() * 5, 100);
-      setProgress(newProgress);
-      barFill.clear();
-      barFill.beginFill(0xffa500).drawRoundedRect(0, 0, (newProgress / 100) * 300, 20, 10).endFill();
-      if (newProgress < 100 && !skip) setTimeout(updateProgress, 200);
-    };
-
-    updateProgress();
-
-    // 🔊 Ambient Audio
-    if (!prefersReducedMotion) {
-      const sound = new Howl({
-        src: ['/sounds/dawn-ambience.mp3'],
-        loop: true,
-        volume: 0.3,
-      });
-      sound.play();
-    }
+    }, 50);
 
     return () => {
-      app.destroy(true, true);
+      clearTimeout(nameTimer);
+      clearTimeout(subtitleTimer);
+      clearInterval(progressInterval);
     };
-  }, [progress, skip]);
+  }, [onLoadingComplete]);
 
   return (
-    <div
-      ref={canvasRef}
-      style={{
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: '#000',
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
-      {progress >= 100 && !skip && (
-        <button
-          style={{
-            position: 'absolute',
-            right: 20,
-            bottom: 20,
-            padding: '10px 20px',
-            background: 'rgba(0,0,0,0.6)',
-            color: 'white',
-            border: 'none',
-            fontFamily: 'monospace',
-            cursor: 'pointer',
-          }}
-          onClick={() => setSkip(true)}
-        >
-          Enter
-        </button>
-      )}
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 flex items-center justify-center overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl animate-pulse delay-500" />
+      </div>
+
+      {/* Floating Particles */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-blue-400/60 rounded-full animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${3 + Math.random() * 4}s`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 text-center">
+        {/* Logo Icon */}
+        <div className="mb-8 relative">
+          <div className="w-20 h-20 mx-auto relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-20 animate-ping" />
+            <div className="absolute inset-2 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-40 animate-ping delay-75" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Zap className="h-10 w-10 text-blue-400 animate-pulse" />
+            </div>
+          </div>
+        </div>
+
+        {/* Animated Name */}
+        <div className="mb-6 overflow-hidden">
+          <h1 className={`text-6xl md:text-8xl font-bold transition-all duration-2000 ${
+            showName 
+              ? 'opacity-100 translate-y-0' 
+              : 'opacity-0 translate-y-20'
+          }`}>
+            <span className="inline-block">
+              {'JAI'.split('').map((letter, index) => (
+                <span
+                  key={index}
+                  className="inline-block bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-bounce-in"
+                  style={{ 
+                    animationDelay: `${showName ? index * 200 + 500 : 0}ms`,
+                    animationFillMode: 'both'
+                  }}
+                >
+                  {letter}
+                </span>
+              ))}
+            </span>
+            <span className="inline-block ml-4">
+              {'NARULA'.split('').map((letter, index) => (
+                <span
+                  key={index}
+                  className="inline-block bg-gradient-to-r from-purple-400 via-pink-500 to-blue-400 bg-clip-text text-transparent animate-bounce-in"
+                  style={{ 
+                    animationDelay: `${showName ? (index + 3) * 200 + 800 : 0}ms`,
+                    animationFillMode: 'both'
+                  }}
+                >
+                  {letter}
+                </span>
+              ))}
+            </span>
+          </h1>
+        </div>
+
+        {/* Animated Subtitle */}
+        <div className={`mb-12 transition-all duration-1000 delay-500 ${
+          showSubtitle 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-10'
+        }`}>
+          <p className="text-xl md:text-2xl text-gray-300 font-light tracking-wide">
+            Data Analyst & Dashboard Designer
+          </p>
+          <div className="w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mt-4 animate-pulse" />
+        </div>
+
+        {/* Progress Bar */}
+        <div className="w-80 max-w-sm mx-auto">
+          <div className="flex justify-between text-sm text-gray-400 mb-2">
+            <span>Loading Portfolio</span>
+            <span>{progress}%</span>
+          </div>
+          <div className="w-full bg-gray-700/50 rounded-full h-2 overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full transition-all duration-300 ease-out relative"
+              style={{ width: `${progress}%` }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+            </div>
+          </div>
+        </div>
+
+        {/* Loading Dots */}
+        <div className="flex justify-center space-x-2 mt-8">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"
+              style={{ animationDelay: `${i * 200}ms` }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Animated Lines */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent animate-pulse" />
+        <div className="absolute bottom-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent animate-pulse delay-1000" />
+        <div className="absolute left-1/4 top-0 h-full w-px bg-gradient-to-b from-transparent via-cyan-500/20 to-transparent animate-pulse delay-500" />
+        <div className="absolute right-1/4 top-0 h-full w-px bg-gradient-to-b from-transparent via-pink-500/20 to-transparent animate-pulse delay-1500" />
+      </div>
     </div>
   );
 };
 
 export default LoadingScreen;
+ 
