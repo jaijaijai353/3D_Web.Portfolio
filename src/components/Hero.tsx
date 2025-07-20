@@ -79,7 +79,6 @@ const Hero: React.FC = () => {
           align-items: flex-start;
           text-align: left;
           max-width: 600px;
-          margin: 0 auto;
           background: rgba(0, 0, 0, 0.4);
           backdrop-filter: blur(10px);
           border-radius: 1rem;
@@ -90,9 +89,9 @@ const Hero: React.FC = () => {
         @media(max-width: 767px) {
           .hero-left {
             order: 2;
-            margin-top: 1rem;
             align-items: center;
             text-align: center;
+            margin-top: 0; /* 🛠️ Removed space */
           }
         }
 
@@ -107,8 +106,9 @@ const Hero: React.FC = () => {
           .hero-right {
             order: 1;
             width: 100%;
-            height: 1800px; /* Tripled height for mobile */
-            margin-top: -6rem;
+            height: 1800px;
+            margin-top: -2rem; /* 🛠️ Lowered spline slightly */
+            margin-bottom: -1rem; /* 🛠️ Pull closer to text */
           }
         }
 
