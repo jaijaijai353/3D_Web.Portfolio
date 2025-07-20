@@ -452,33 +452,6 @@ html {
 }
 
 /* Mobile Spline Optimizations */
-@media (max-width: 768px) {
-  .loading-spline-container {
-    height: 200vh !important;
-    top: -50vh !important;
-    transform: scale(2) !important;
-  }
-  
-  /* Ensure smooth rendering on mobile */
-  canvas {
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    will-change: transform;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-perspective: 1000px;
-    perspective: 1000px;
-  }
-}
-
-@media (max-width: 480px) {
-  .loading-spline-container {
-    height: 250vh !important;
-    top: -75vh !important;
-    transform: scale(2.2) !important;
-  }
-}
-
 /* Hardware acceleration for smooth performance */
 .spline-optimized {
   transform: translate3d(0, 0, 0);
