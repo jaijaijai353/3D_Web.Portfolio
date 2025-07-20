@@ -453,10 +453,10 @@ html {
 
 /* Mobile Spline Optimizations */
 @media (max-width: 768px) {
-  .spline-container {
-    height: 250vh !important;
-    top: -75vh !important;
-    transform: scale(1.5) !important;
+  .loading-spline-container {
+    height: 200vh !important;
+    top: -50vh !important;
+    transform: scale(2) !important;
   }
   
   /* Ensure smooth rendering on mobile */
@@ -472,10 +472,10 @@ html {
 }
 
 @media (max-width: 480px) {
-  .spline-container {
-    height: 300vh !important;
-    top: -100vh !important;
-    transform: scale(1.8) !important;
+  .loading-spline-container {
+    height: 250vh !important;
+    top: -75vh !important;
+    transform: scale(2.2) !important;
   }
 }
 

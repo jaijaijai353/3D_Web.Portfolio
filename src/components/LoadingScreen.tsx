@@ -41,7 +41,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
     <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 flex items-center justify-center overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className={`w-full transition-opacity duration-1000 ${splineLoaded ? 'opacity-100' : 'opacity-0'}`}
+        <div className={`w-full h-full transition-opacity duration-1000 spline-optimized loading-spline-container ${splineLoaded ? 'opacity-100' : 'opacity-0'}`}>
              style={{ 
                height: '200vh', 
                top: '-50vh',
