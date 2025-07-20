@@ -57,19 +57,20 @@ const Hero: React.FC = () => {
           color: white;
           min-height: 100vh;
           display: flex;
+          flex-direction: row;
+          padding: 4rem;
+          box-sizing: border-box;
           justify-content: center;
           align-items: center;
-          padding: 2rem;
-          box-sizing: border-box;
         }
 
-        .hero-inner {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          max-width: 1200px;
+        @media(max-width: 767px) {
+          .hero-container {
+            flex-direction: column;
+            padding: 2rem 1rem;
+            align-items: center;
+            text-align: center;
+          }
         }
 
         .hero-left {
@@ -80,6 +81,7 @@ const Hero: React.FC = () => {
           align-items: flex-start;
           text-align: left;
           max-width: 600px;
+          margin: 0 auto;
           background: rgba(0, 0, 0, 0.4);
           backdrop-filter: blur(10px);
           border-radius: 1rem;
@@ -87,45 +89,30 @@ const Hero: React.FC = () => {
           animation: slideIn 1s ease-in-out;
         }
 
+        @media(max-width: 767px) {
+          .hero-left {
+            order: 2;
+            margin-top: 2rem;
+            align-items: center;
+            text-align: center;
+            max-width: 100%;
+            padding: 1rem;
+          }
+        }
+
         .hero-right {
           flex: 1;
           max-width: 600px;
           height: 600px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          margin: 0 auto;
         }
 
         @media(max-width: 767px) {
-          .hero-inner {
-            flex-direction: column;
-          }
-
-          .hero-left {
-            order: 2;
-            margin-top: 1rem;
-            align-items: center;
-            text-align: center;
-          }
-
           .hero-right {
             order: 1;
-            height: 400px;
             width: 100%;
-            transform: scale(1.1);
-            transform-origin: top center;
-          }
-
-          h1 {
-            font-size: 2.5rem;
-          }
-
-          .skill-text {
-            font-size: 1.25rem;
-          }
-
-          .description {
-            font-size: 1rem;
+            height: 1800px; /* tripled height */
+            margin-top: 0;
           }
         }
 
@@ -212,43 +199,41 @@ const Hero: React.FC = () => {
       `}</style>
 
       <div className="hero-container">
-        <div className="hero-inner">
-          <div className="hero-left">
-            <h1>Jai Narula</h1>
-            <div
-              className={`skill-text ${fade ? "fade-in" : "fade-out"}`}
-              style={{ color }}
-            >
-              I am {skills[skillIndex]}
-            </div>
-            <p className="description">
-              Data Analyst | SQL | Power BI | Python | Excel
-            </p>
+        <div className="hero-right">
+          <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
+            <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
+          </Suspense>
+        </div>
 
-            <button className="cta-button" onClick={downloadResume}>
-              Download Resume
-            </button>
-
-            <div
-              className="scroll-down-btn"
-              onClick={() => scrollToSection("about")}
-              aria-label="Scroll to about section"
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  scrollToSection("about");
-                }
-              }}
-            >
-              <ChevronDown size={32} />
-            </div>
+        <div className="hero-left">
+          <h1>Jai Narula</h1>
+          <div
+            className={`skill-text ${fade ? "fade-in" : "fade-out"}`}
+            style={{ color }}
+          >
+            I am {skills[skillIndex]}
           </div>
+          <p className="description">
+            Data Analyst | SQL | Power BI | Python | Excel
+          </p>
 
-          <div className="hero-right">
-            <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
-              <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
-            </Suspense>
+          <button className="cta-button" onClick={downloadResume}>
+            Download Resume
+          </button>
+
+          <div
+            className="scroll-down-btn"
+            onClick={() => scrollToSection("about")}
+            aria-label="Scroll to about section"
+            role="button"
+            tabIndex={0}
+            onKeyPress={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                scrollToSection("about");
+              }
+            }}
+          >
+            <ChevronDown size={32} />
           </div>
         </div>
       </div>
