@@ -109,7 +109,19 @@ const Hero: React.FC = () => {
             order: 1;
             width: 100%;
             height: 1800px; /* Tall portrait height */
-            margin-bottom: -5rem; /* Pull text up */
+            margin-bottom: -5rem;
+          }
+        }
+
+        .hero-right canvas {
+          transform: scale(0.8);
+          transform-origin: center;
+        }
+
+        @media(max-width: 767px) {
+          .hero-right canvas {
+            transform: scale(0.6);
+            transform-origin: top center;
           }
         }
 
@@ -196,7 +208,6 @@ const Hero: React.FC = () => {
       `}</style>
 
       <div className="hero-container">
-        {/* ✅ TEXT LEFT ON DESKTOP / BELOW ON MOBILE */}
         <div className="hero-left">
           <h1>Jai Narula</h1>
           <div
@@ -229,7 +240,6 @@ const Hero: React.FC = () => {
           </div>
         </div>
 
-        {/* ✅ SPLINE RIGHT ON DESKTOP / ABOVE ON MOBILE */}
         <div className="hero-right">
           <Suspense fallback={<div style={{ color: "#fff", textAlign: "center" }}>Loading animation...</div>}>
             <Spline scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode" />
