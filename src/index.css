@@ -402,59 +402,6 @@ html {
 }
 
 /* Staggered animation delays */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
-.stagger-6 { animation-delay: 0.6s; }
-
-/* Loading screen specific animations */
-@keyframes loading-pulse {
-  0%, 100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.animate-loading-pulse {
-  animation: loading-pulse 2s ease-in-out infinite;
-}
-
-/* Enhanced shimmer effect for loading */
-@keyframes enhanced-shimmer {
-  0% {
-    transform: translateX(-100%) skewX(-15deg);
-  }
-  100% {
-    transform: translateX(200%) skewX(-15deg);
-  }
-}
-
-.animate-enhanced-shimmer {
-  animation: enhanced-shimmer 2s ease-in-out infinite;
-}
-
-/* Dawn Loading Screen Animations */
-@keyframes sway {
-  0%, 100% {
-    transform: rotate(-2deg);
-  }
-  50% {
-    transform: rotate(2deg);
-  }
-}
-
-.animate-sway {
-  animation: sway 3s ease-in-out infinite;
-}
-
-/* Radial gradient utility */
-.bg-gradient-radial {
-  background: radial-gradient(circle, var(--tw-gradient-stops));
-}
 /* Mobile Menu Animations */
 @keyframes slideInFromRight {
   from {
