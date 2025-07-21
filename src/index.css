@@ -436,6 +436,25 @@ html {
 .animate-enhanced-shimmer {
   animation: enhanced-shimmer 2s ease-in-out infinite;
 }
+
+/* Dawn Loading Screen Animations */
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+.animate-sway {
+  animation: sway 3s ease-in-out infinite;
+}
+
+/* Radial gradient utility */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
 /* Mobile Menu Animations */
 @keyframes slideInFromRight {
   from {
