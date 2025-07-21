@@ -190,6 +190,278 @@ body {
   animation-delay: 8000ms;
 }
 
+/* Futuristic Space Loading Animations */
+@keyframes planet-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes planet-surface {
+  from {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.02);
+  }
+  to {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes orbit-1 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-2 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes orbit-3 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes satellite-1 {
+  from {
+    transform: rotate(0deg) translateX(140px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(140px) rotate(-360deg);
+  }
+}
+
+@keyframes satellite-2 {
+  from {
+    transform: rotate(0deg) translateX(160px) rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg) translateX(160px) rotate(360deg);
+  }
+}
+
+@keyframes ring-glow {
+  0%, 100% {
+    opacity: 0.3;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+  }
+}
+
+@keyframes ring-glow-2 {
+  0%, 100% {
+    opacity: 0.2;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+  }
+  50% {
+    opacity: 0.5;
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+  }
+}
+
+@keyframes ring-glow-3 {
+  0%, 100% {
+    opacity: 0.25;
+    box-shadow: 0 0 18px rgba(34, 211, 238, 0.25);
+  }
+  50% {
+    opacity: 0.55;
+    box-shadow: 0 0 35px rgba(34, 211, 238, 0.55);
+  }
+}
+
+@keyframes text-glow-space {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.6), 0 0 60px rgba(34, 211, 238, 0.4);
+  }
+}
+
+@keyframes shimmer-space {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes fade-in-space {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float-space {
+  0%, 100% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px) rotate(90deg);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-10px) rotate(180deg);
+  }
+  75% {
+    transform: translateY(-15px) translateX(5px) rotate(270deg);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Animation Classes */
+.animate-planet-rotate {
+  animation: planet-rotate 20s linear infinite;
+}
+
+.animate-planet-surface {
+  animation: planet-surface 15s ease-in-out infinite;
+}
+
+.animate-orbit-1 {
+  animation: orbit-1 12s linear infinite;
+}
+
+.animate-orbit-2 {
+  animation: orbit-2 18s linear infinite;
+}
+
+.animate-orbit-3 {
+  animation: orbit-3 10s linear infinite;
+}
+
+.animate-satellite-1 {
+  animation: satellite-1 8s linear infinite;
+}
+
+.animate-satellite-2 {
+  animation: satellite-2 12s linear infinite;
+}
+
+.animate-ring-glow {
+  animation: ring-glow 3s ease-in-out infinite;
+}
+
+.animate-ring-glow-2 {
+  animation: ring-glow-2 4s ease-in-out infinite;
+}
+
+.animate-ring-glow-3 {
+  animation: ring-glow-3 2.5s ease-in-out infinite;
+}
+
+.animate-text-glow-space {
+  animation: text-glow-space 2s ease-in-out infinite;
+}
+
+.animate-shimmer-space {
+  animation: shimmer-space 2s ease-in-out infinite;
+}
+
+.animate-fade-in-space {
+  animation: fade-in-space 1s ease-out;
+}
+
+.animate-float-space {
+  animation: float-space 8s ease-in-out infinite;
+}
+
+.animate-twinkle {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+/* Utility Classes */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-gpu {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Background Gradients */
+.bg-space-gradient {
+  background: radial-gradient(ellipse at center, #1e1b4b 0%, #0f0f23 50%, #000000 100%);
+}
+
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+.bg-gradient-conic {
+  background: conic-gradient(var(--tw-gradient-stops));
+}
+
+/* Shadow Effects */
+.shadow-planet {
+  box-shadow: 
+    inset 0 0 50px rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(59, 130, 246, 0.2),
+    0 0 100px rgba(139, 92, 246, 0.1);
+}
+
+.shadow-glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+}
+
+.shadow-glow-purple {
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+}
+
+.shadow-glow-green {
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+}
+
 /* Additional delays for letter animations */
 .delay-100 {
   animation-delay: 100ms;
