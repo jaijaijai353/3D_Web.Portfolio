@@ -61,7 +61,7 @@ const Contact: React.FC = () => {
     {
       icon: Linkedin,
       label: 'LinkedIn',
-      value: 'linkedin.com/in/jainarula',
+      value: 'https://www.linkedin.com/in/jai-narula-aa3185242/',
       href: 'https://linkedin.com/in/jainarula',
       color: 'from-blue-600 to-blue-700'
     },
