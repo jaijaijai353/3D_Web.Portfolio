@@ -4,8 +4,8 @@ import { ExternalLink, Github, BarChart3, PlayCircle, Database } from 'lucide-re
 const Projects: React.FC = () => {
   const projects = [
     {
-      title: 'Sales Performance Dashboard',
-      description: 'Interactive Power BI dashboard analyzing sales trends, customer segmentation, and revenue forecasting with real-time data visualization.',
+      title: ' Blinkit Sales Dashboard',
+      description: 'Interactive Power BI dashboard analyzing Blinkit sales trends, customer segmentation, and revenue forecasting with real-time data visualization.',
       tech: ['Power BI', 'SQL', 'DAX', 'Excel'],
       icon: BarChart3,
       color: 'from-blue-500 to-blue-600',
