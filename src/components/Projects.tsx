@@ -18,7 +18,8 @@ const Projects: React.FC = () => {
       tech: ['Python', 'Pandas', 'Matplotlib', 'Seaborn'],
       icon: PlayCircle,
       color: 'from-red-500 to-red-600',
-      image: 'https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=800'
+      image: 'https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=800',
+      link: 'https://github.com/jaijaijai353/Netflix-EDA-Analysis'
     },
     {
       title: 'Inventory Management System',
@@ -48,7 +49,6 @@ const Projects: React.FC = () => {
                 key={index}
                 className="group relative bg-gray-50 dark:bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:scale-105"
               >
-                {/* Background hover effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
                 <div className="absolute -top-4 -right-4 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-purple-600/10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700 pointer-events-none z-0" />
 
@@ -112,5 +112,3 @@ const Projects: React.FC = () => {
 };
 
 export default Projects;
-
-
