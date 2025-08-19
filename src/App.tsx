@@ -9,27 +9,36 @@ import Experience from './components/Experience';
 import Projects from './components/Projects';
 import Education from './components/Education';
 import Contact from './components/Contact';
-import ParticleBackground from './components/ParticleBackground';
 import ScrollAnimations from './components/ScrollAnimations';
-import SideScreenAnimations from './components/SideScreenAnimations';
 import LazySection from './components/LazySection';
 import SkeletonLoader from './components/SkeletonLoader';
-import Spline from '@splinetool/react-spline';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [showContent, setShowContent] = useState(false);
+  const [splineLoaded, setSplineLoaded] = useState(false);
 
   useEffect(() => {
-    window.scrollTo({ top: 1, left: 0, behavior: 'smooth' });
-    setTimeout(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    }, 200);
+    // Preload critical resources
+    const preloadSpline = () => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.href = 'https://prod.spline.design/lcv8oS0aFG8HFeaB/scene.splinecode';
+      link.as = 'fetch';
+      link.crossOrigin = 'anonymous';
+      document.head.appendChild(link);
+    };
+    
+    preloadSpline();
   }, []);
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
-    setTimeout(() => setShowContent(true), 300);
+    setTimeout(() => {
+      setShowContent(true);
+      // Start loading Spline after content is shown
+      setTimeout(() => setSplineLoaded(true), 500);
+    }, 300);
   };
 
   if (isLoading) {
@@ -47,19 +56,12 @@ function App() {
           showContent ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        {/* Spline with responsive spacing */}
-        <div className="absolute w-full h-screen z-0 top-16 sm:top-0">
-          <Spline scene="https://prod.spline.design/lcv8oS0aFG8HFeaB/scene.splinecode" />
-        </div>
-
-        <ParticleBackground />
         <ScrollAnimations />
-        <SideScreenAnimations />
         <Header />
 
         <main className="relative z-10 scroll-smooth">
           <section id="hero">
-            <Hero />
+            <Hero splineLoaded={splineLoaded} />
           </section>
 
           <section id="about">
