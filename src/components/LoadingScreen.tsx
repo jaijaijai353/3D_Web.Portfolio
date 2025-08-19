@@ -22,12 +22,12 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(progressInterval);
-          setTimeout(onLoadingComplete, 800);
+          setTimeout(onLoadingComplete, 500);
           return 100;
         }
-        return prev + 2;
+        return prev + 4;
       });
-    }, 50);
+    }, 30);
 
     return () => {
       clearTimeout(nameTimer);

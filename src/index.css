@@ -13,6 +13,30 @@ html {
 body {
   font-family: 'Inter', sans-serif;
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+/* GPU acceleration for animations */
+.animate-spin,
+.animate-pulse,
+.animate-bounce,
+.animate-float,
+.animate-glow {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Optimize Spline container */
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 @keyframes fade-in {

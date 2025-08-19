@@ -16,28 +16,36 @@ import SkeletonLoader from './components/SkeletonLoader';
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [showContent, setShowContent] = useState(false);
-  const [splineLoaded, setSplineLoaded] = useState(false);
+  const [splineLoaded, setSplineLoaded] = useState(true);
 
   useEffect(() => {
-    // Preload critical resources
-    const preloadSpline = () => {
+    // Optimize initial load
+    const optimizeLoad = () => {
+      // Preload Spline scene
       const link = document.createElement('link');
       link.rel = 'preload';
-      link.href = 'https://prod.spline.design/lcv8oS0aFG8HFeaB/scene.splinecode';
+      link.href = 'https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode';
       link.as = 'fetch';
       link.crossOrigin = 'anonymous';
       document.head.appendChild(link);
+
+      // Optimize rendering
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          setSplineLoaded(true);
+        });
+      } else {
+        setTimeout(() => setSplineLoaded(true), 100);
+      }
     };
     
-    preloadSpline();
+    optimizeLoad();
   }, []);
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
     setTimeout(() => {
       setShowContent(true);
-      // Start loading Spline after content is shown
-      setTimeout(() => setSplineLoaded(true), 500);
     }, 300);
   };
 
