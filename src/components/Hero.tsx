@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Spline from "@splinetool/react-spline";
 import { ChevronDown } from "lucide-react";
+import { useInView } from "react-intersection-observer";
 
 interface HeroProps {
   splineLoaded: boolean;
@@ -23,29 +24,63 @@ const randomColor = () => {
   return color;
 };
 
+// ✅ Memoized Spline so it doesn’t re-render with text animations
+const SplineScene = React.memo(
+  ({ onLoad, onError }: { onLoad: () => void; onError: () => void }) => (
+    <Spline
+      scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode"
+      onLoad={onLoad}
+      onError={onError}
+      style={{ width: "100%", height: "100%" }}
+    />
+  )
+);
+
 const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
   const [skillIndex, setSkillIndex] = useState(0);
   const [color, setColor] = useState("#FFFFFF");
   const [fade, setFade] = useState(true);
+
+  const [splineReady, setSplineReady] = useState(false);
   const [splineError, setSplineError] = useState(false);
 
+  // ✅ Animate skills with RAF (smoother than setInterval)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setFade(false);
-      setTimeout(() => {
-        setSkillIndex((prev) => (prev + 1) % skills.length);
-        setColor(randomColor());
-        setFade(true);
-      }, 500); // fade out time
-    }, 2500); // total interval
+    let frame: number;
+    let lastTime = performance.now();
 
-    return () => clearInterval(interval);
+    const loop = (time: number) => {
+      if (time - lastTime > 2500) {
+        setFade(false);
+        setTimeout(() => {
+          setSkillIndex((prev) => (prev + 1) % skills.length);
+          setColor(randomColor());
+          setFade(true);
+        }, 500);
+        lastTime = time;
+      }
+      frame = requestAnimationFrame(loop);
+    };
+
+    frame = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(frame);
   }, []);
+
+  const handleSplineLoad = () => {
+    setSplineReady(true);
+    console.info("Spline scene loaded successfully!");
+  };
 
   const handleSplineError = () => {
     setSplineError(true);
-    console.warn('Spline scene failed to load, using fallback');
+    console.warn("Spline scene failed to load, using fallback");
   };
+
+  // ✅ Lazy load with intersection observer
+  const { ref: splineRef, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
 
   return (
     <>
@@ -58,8 +93,6 @@ const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
           flex-direction: column;
           padding: 2rem;
           box-sizing: border-box;
-          will-change: transform;
-          transform: translateZ(0);
         }
         @media(min-width: 768px) {
           .hero-container {
@@ -78,7 +111,6 @@ const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
           text-align: left;
           max-width: 600px;
           margin: 0 auto;
-          will-change: transform;
         }
         @media(max-width: 767px) {
           .hero-left {
@@ -94,7 +126,6 @@ const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
           height: 600px;
           margin: 0 auto;
           position: relative;
-          will-change: transform;
         }
         @media(max-width: 767px) {
           .hero-right {
@@ -161,7 +192,6 @@ const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
           font-size: 3rem;
           margin-bottom: 0.5rem;
           font-weight: 900;
-          will-change: transform;
         }
         @media(min-width: 768px) {
           h1 {
@@ -172,15 +202,10 @@ const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
           margin-top: 0.5rem;
           font-size: 1.75rem;
           font-weight: 600;
-          transition: opacity 0.5s ease;
-          will-change: opacity, color;
+          transition: opacity 0.5s ease, color 0.5s ease;
         }
-        .fade-in {
-          opacity: 1;
-        }
-        .fade-out {
-          opacity: 0;
-        }
+        .fade-in { opacity: 1; }
+        .fade-out { opacity: 0; }
         .description {
           margin-top: 1rem;
           font-size: 1.25rem;
@@ -193,8 +218,7 @@ const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
           cursor: pointer;
           animation: bounce 2s infinite;
           color: #888;
-          transition: color 0.3s ease;
-          will-change: transform;
+          transition: color 0.3s ease, transform 0.3s ease;
         }
         .scroll-down-btn:hover {
           color: white;
@@ -202,17 +226,13 @@ const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
           animation: none;
         }
         @keyframes bounce {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(10px);
-          }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(10px); }
         }
       `}</style>
 
       <div className="hero-container">
-        {/* Left side with text */}
+        {/* Left side */}
         <div className="hero-left">
           <h1>Jai Narula</h1>
           <div
@@ -227,19 +247,15 @@ const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
 
           <div
             className="scroll-down-btn"
-            onClick={() => {
-              document
-                .querySelector("#about")
-                ?.scrollIntoView({ behavior: "smooth" });
-            }}
+            onClick={() =>
+              document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })
+            }
             aria-label="Scroll to about section"
             role="button"
             tabIndex={0}
             onKeyPress={(e) => {
               if (e.key === "Enter" || e.key === " ") {
-                document
-                  .querySelector("#about")
-                  ?.scrollIntoView({ behavior: "smooth" });
+                document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" });
               }
             }}
           >
@@ -248,9 +264,9 @@ const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
         </div>
 
         {/* Right side with Spline */}
-        <div className="hero-right">
+        <div ref={splineRef} className="hero-right">
           <div className="spline-container">
-            {!splineReady && !splineError && (
+            {!splineReady && !splineError && inView && (
               <div className="spline-loading">
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
@@ -258,24 +274,17 @@ const Hero: React.FC<HeroProps> = ({ splineLoaded }) => {
                 </div>
               </div>
             )}
-            
-            {splineLoaded && !splineError ? (
-              <Spline 
-                scene="https://prod.spline.design/uDidnMGWsjyYajl5/scene.splinecode"
+
+            {inView && splineLoaded && !splineError ? (
+              <SplineScene
                 onLoad={handleSplineLoad}
                 onError={handleSplineError}
-                style={{ 
-                  width: '100%', 
-                  height: '100%',
-                  opacity: splineReady ? 1 : 0,
-                  transition: 'opacity 0.5s ease-in-out'
-                }}
               />
             ) : (
               <div className="spline-fallback">
                 <div className="fallback-animation"></div>
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-blue-400 text-sm">
-                  {splineError ? '3D Scene Unavailable' : 'Interactive 3D Model'}
+                  {splineError ? "3D Scene Unavailable" : "Interactive 3D Model"}
                 </div>
               </div>
             )}
