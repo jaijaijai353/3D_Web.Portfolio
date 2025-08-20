@@ -3,165 +3,238 @@ import { Zap } from 'lucide-react';
 
 interface LoadingScreenProps {
   onLoadingComplete: () => void;
+  onProgressUpdate: (isComplete: boolean) => void;
 }
 
-const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete, onProgressUpdate }) => {
   const [progress, setProgress] = useState(0);
-  const [showName, setShowName] = useState(false);
-  const [showSubtitle, setShowSubtitle] = useState(false);
+  const [phase, setPhase] = useState(0);
+  const [showSkip, setShowSkip] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const [canProceed, setCanProceed] = useState(false);
 
   useEffect(() => {
-    // Start name animation after a brief delay
-    const nameTimer = setTimeout(() => setShowName(true), 500);
-    
-    // Start subtitle animation
-    const subtitleTimer = setTimeout(() => setShowSubtitle(true), 2000);
+    const phases = [
+      { text: 'Initializing Systems...', duration: 2000 },
+      { text: 'Loading Navigation...', duration: 1800 },
+      { text: 'Preparing Interface...', duration: 1500 },
+      { text: 'Finalizing Setup...', duration: 1200 }
+    ];
+
+    let currentPhase = 0;
+    const phaseInterval = setInterval(() => {
+      if (currentPhase < phases.length - 1) {
+        currentPhase++;
+        setPhase(currentPhase);
+      }
+    }, phases[0].duration / phases.length);
+
+    // Show skip button after 3 seconds
+    const skipTimer = setTimeout(() => setShowSkip(true), 3000);
     
     // Progress bar animation
     const progressInterval = setInterval(() => {
       setProgress(prev => {
-        if (prev >= 100) {
+        const newProgress = prev + 1.5;
+        if (newProgress >= 100) {
           clearInterval(progressInterval);
-          setTimeout(onLoadingComplete, 500);
+          setIsComplete(true);
+          onProgressUpdate(true);
+          // Wait for all animations to complete before allowing proceed
+          setTimeout(() => {
+            setCanProceed(true);
+          }, 2000);
           return 100;
         }
-        return prev + 4;
+        onProgressUpdate(false);
+        return newProgress;
       });
-    }, 30);
+    }, 50);
 
     return () => {
-      clearTimeout(nameTimer);
-      clearTimeout(subtitleTimer);
+      clearInterval(phaseInterval);
+      clearTimeout(skipTimer);
       clearInterval(progressInterval);
     };
-  }, [onLoadingComplete]);
+  }, []);
+
+  // Handle completion when both progress and animations are done
+  useEffect(() => {
+    if (isComplete && canProceed) {
+      const finalTimeout = setTimeout(() => {
+        onLoadingComplete();
+      }, 500);
+      return () => clearTimeout(finalTimeout);
+    }
+  }, [isComplete, canProceed, onLoadingComplete]);
+
+  const skipLoading = () => {
+    setProgress(100);
+    setIsComplete(true);
+    onProgressUpdate(true);
+    setCanProceed(true);
+    setTimeout(() => onLoadingComplete(), 300);
+  };
+
+  const phases = [
+    { text: 'Initializing Systems...', duration: 2000 },
+    { text: 'Loading Navigation...', duration: 1800 },
+    { text: 'Preparing Interface...', duration: 1500 },
+    { text: 'Finalizing Setup...', duration: 1200 }
+  ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 flex items-center justify-center overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl animate-pulse delay-500" />
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-slate-800 to-black flex items-center justify-center overflow-hidden">
+      {/* Animated Grid Background */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px',
+          animation: 'grid-move 20s linear infinite'
+        }} />
       </div>
 
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(30)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-blue-400/60 rounded-full animate-float"
+            className="absolute w-1 h-1 bg-blue-400/40 rounded-full animate-float-space"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${3 + Math.random() * 4}s`
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${4 + Math.random() * 6}s`
             }}
           />
         ))}
       </div>
 
+      {/* Scanning Lines */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent animate-scan-horizontal" />
+        <div className="absolute top-0 left-0 h-full w-px bg-gradient-to-b from-transparent via-cyan-500/50 to-transparent animate-scan-vertical" />
+      </div>
+
       {/* Main Content */}
       <div className="relative z-10 text-center">
-        {/* Logo Icon */}
-        <div className="mb-8 relative">
-          <div className="w-20 h-20 mx-auto relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-20 animate-ping" />
-            <div className="absolute inset-2 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-40 animate-ping delay-75" />
+        {/* Logo Section */}
+        <div className="mb-12 relative">
+          <div className="w-24 h-24 mx-auto relative">
+            {/* Outer Ring */}
+            <div className="absolute inset-0 border-2 border-blue-500/30 rounded-full animate-spin-slow" />
+            <div className="absolute inset-2 border-2 border-purple-500/30 rounded-full animate-spin-reverse" />
+            <div className="absolute inset-4 border-2 border-cyan-500/30 rounded-full animate-spin-slow" />
+            
+            {/* Center Icon */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <Zap className="h-10 w-10 text-blue-400 animate-pulse" />
+              <Zap className="h-12 w-12 text-blue-400 animate-pulse" />
             </div>
+            
+            {/* Pulsing Background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-600/10 rounded-full animate-ping" />
           </div>
         </div>
 
         {/* Animated Name */}
-        <div className="mb-6 overflow-hidden">
-          <h1 className={`text-6xl md:text-8xl font-bold transition-all duration-2000 ${
-            showName 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-0 translate-y-20'
-          }`}>
-            <span className="inline-block">
-              {'JAI'.split('').map((letter, index) => (
-                <span
-                  key={index}
-                  className="inline-block bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-bounce-in"
-                  style={{ 
-                    animationDelay: `${showName ? index * 200 + 500 : 0}ms`,
-                    animationFillMode: 'both'
-                  }}
-                >
-                  {letter}
-                </span>
-              ))}
-            </span>
-            <span className="inline-block ml-4">
-              {'NARULA'.split('').map((letter, index) => (
-                <span
-                  key={index}
-                  className="inline-block bg-gradient-to-r from-purple-400 via-pink-500 to-blue-400 bg-clip-text text-transparent animate-bounce-in"
-                  style={{ 
-                    animationDelay: `${showName ? (index + 3) * 200 + 800 : 0}ms`,
-                    animationFillMode: 'both'
-                  }}
-                >
-                  {letter}
-                </span>
-              ))}
-            </span>
-          </h1>
+        <div className="mb-12">
+          <div className="text-6xl md:text-8xl font-bold mb-6 font-mono tracking-wider">
+            {'JAI NARULA'.split('').map((char, index) => (
+              <span
+                key={index}
+                className={`inline-block transition-all duration-700 ${
+                  char === ' ' ? 'w-4' : 'animate-bounce-in bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent'
+                }`}
+                style={{ 
+                  animationDelay: `${index * 150}ms`,
+                  animationFillMode: 'both'
+                }}
+              >
+                {char === ' ' ? '\u00A0' : char}
+              </span>
+            ))}
+          </div>
+          
+          <div className="text-xl md:text-2xl text-gray-300 font-light tracking-wide mb-4">
+            Data Analyst & Dashboard Designer
+          </div>
+          
+          <div className="w-48 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full mx-auto animate-pulse" />
         </div>
 
-        {/* Animated Subtitle */}
-        <div className={`mb-12 transition-all duration-1000 delay-500 ${
-          showSubtitle 
-            ? 'opacity-100 translate-y-0' 
-            : 'opacity-0 translate-y-10'
-        }`}>
-          <p className="text-xl md:text-2xl text-gray-300 font-light tracking-wide">
-            Data Analyst & Dashboard Designer
+        {/* Phase Text */}
+        <div className="mb-8 h-8 transition-all duration-500">
+          <p className="text-xl text-blue-300 font-mono tracking-wide animate-fade-in-space">
+            {phases[phase]?.text || 'Ready for Launch...'}
           </p>
-          <div className="w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mt-4 animate-pulse" />
         </div>
 
         {/* Progress Bar */}
-        <div className="w-80 max-w-sm mx-auto">
-          <div className="flex justify-between text-sm text-gray-400 mb-2">
-            <span>Loading Portfolio</span>
-            <span>{progress}%</span>
+        <div className="w-96 max-w-sm mx-auto mb-8">
+          <div className="flex justify-between text-sm text-gray-400 mb-3 font-mono">
+            <span>{isComplete ? 'MISSION COMPLETE' : 'MISSION PROGRESS'}</span>
+            <span>{Math.round(progress)}%</span>
           </div>
-          <div className="w-full bg-gray-700/50 rounded-full h-2 overflow-hidden">
+          <div className="relative w-full bg-slate-800/50 rounded-full h-3 overflow-hidden border border-blue-500/30">
             <div 
               className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full transition-all duration-300 ease-out relative"
               style={{ width: `${progress}%` }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+              <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent ${progress < 100 ? 'animate-shimmer-space' : ''}`} />
             </div>
+            <div className="absolute right-0 top-0 w-1 h-full bg-cyan-400 opacity-75 animate-pulse" />
           </div>
         </div>
 
-        {/* Loading Dots */}
-        <div className="flex justify-center space-x-2 mt-8">
-          {[0, 1, 2].map((i) => (
+        {/* System Status */}
+        <div className="grid grid-cols-3 gap-4 mb-8 text-xs font-mono">
+          <div className="flex items-center justify-center space-x-2 bg-slate-800/30 rounded-lg p-2 border border-blue-500/20">
+            <div className={`w-2 h-2 rounded-full animate-pulse ${progress > 25 ? 'bg-green-400' : 'bg-yellow-400'}`} />
+            <span className="text-green-400">SYS</span>
+          </div>
+          <div className="flex items-center justify-center space-x-2 bg-slate-800/30 rounded-lg p-2 border border-purple-500/20">
+            <div className={`w-2 h-2 rounded-full animate-pulse delay-500 ${progress > 50 ? 'bg-blue-400' : 'bg-yellow-400'}`} />
+            <span className="text-blue-400">NAV</span>
+          </div>
+          <div className="flex items-center justify-center space-x-2 bg-slate-800/30 rounded-lg p-2 border border-cyan-500/20">
+            <div className={`w-2 h-2 rounded-full animate-pulse delay-1000 ${progress > 75 ? 'bg-cyan-400' : 'bg-yellow-400'}`} />
+            <span className="text-cyan-400">COM</span>
+          </div>
+        </div>
+
+        {/* Loading Indicators */}
+        <div className="flex justify-center space-x-3 mb-8">
+          {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"
-              style={{ animationDelay: `${i * 200}ms` }}
+              className="w-2 h-2 bg-blue-400 rounded-full animate-pulse-sequence"
+              style={{ animationDelay: `${i * 300}ms` }}
             />
           ))}
         </div>
       </div>
 
-      {/* Animated Lines */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent animate-pulse" />
-        <div className="absolute bottom-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent animate-pulse delay-1000" />
-        <div className="absolute left-1/4 top-0 h-full w-px bg-gradient-to-b from-transparent via-cyan-500/20 to-transparent animate-pulse delay-500" />
-        <div className="absolute right-1/4 top-0 h-full w-px bg-gradient-to-b from-transparent via-pink-500/20 to-transparent animate-pulse delay-1500" />
-      </div>
+      {/* Skip Button */}
+      {showSkip && (
+        <button
+          onClick={skipLoading}
+          className="absolute bottom-8 right-8 px-4 py-2 bg-slate-800/50 text-gray-400 rounded-lg border border-gray-600/30 hover:border-blue-500/50 hover:text-blue-400 transition-all duration-300 text-sm font-mono backdrop-blur-sm"
+        >
+          SKIP SEQUENCE
+        </button>
+      )}
+
+      {/* Corner Decorations */}
+      <div className="absolute top-8 left-8 w-8 h-8 border-l-2 border-t-2 border-blue-500/30" />
+      <div className="absolute top-8 right-8 w-8 h-8 border-r-2 border-t-2 border-blue-500/30" />
+      <div className="absolute bottom-8 left-8 w-8 h-8 border-l-2 border-b-2 border-blue-500/30" />
+      <div className="absolute bottom-8 right-8 w-8 h-8 border-r-2 border-b-2 border-blue-500/30" />
     </div>
   );
 };
 
 export default LoadingScreen;
- 
