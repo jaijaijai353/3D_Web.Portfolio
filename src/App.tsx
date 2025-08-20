@@ -15,7 +15,7 @@ import SkeletonLoader from './components/SkeletonLoader';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [showContent, setShowContent] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
   const [splineLoaded, setSplineLoaded] = useState(true);
 
   useEffect(() => {
@@ -42,17 +42,24 @@ function App() {
     optimizeLoad();
   }, []);
 
-  const handleLoadingComplete = () => {
-    setIsLoading(false);
-    setTimeout(() => {
-      setShowContent(true);
-    }, 300);
+  const handleLoadingComplete = (forceComplete = false) => {
+    // Only proceed if loading is actually complete or forced
+    if (forceComplete || loadingComplete) {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoadingProgress = (isComplete: boolean) => {
+    setLoadingComplete(isComplete);
   };
 
   if (isLoading) {
     return (
       <ThemeProvider>
-        <LoadingScreen onLoadingComplete={handleLoadingComplete} />
+        <LoadingScreen 
+          onLoadingComplete={handleLoadingComplete}
+          onProgressUpdate={handleLoadingProgress}
+        />
       </ThemeProvider>
     );
   }
@@ -60,9 +67,7 @@ function App() {
   return (
     <ThemeProvider>
       <div
-        className={`min-h-screen bg-white dark:bg-slate-900 transition-all duration-1000 relative ${
-          showContent ? 'opacity-100' : 'opacity-0'
-        }`}
+        className="min-h-screen bg-white dark:bg-slate-900 transition-all duration-1000 relative opacity-100"
       >
         <ScrollAnimations />
         <Header />
