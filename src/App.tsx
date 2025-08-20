@@ -16,6 +16,7 @@ import SkeletonLoader from './components/SkeletonLoader';
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const [showTransition, setShowTransition] = useState(false);
   const [splineLoaded, setSplineLoaded] = useState(true);
 
   useEffect(() => {
@@ -45,7 +46,13 @@ function App() {
   const handleLoadingComplete = (forceComplete = false) => {
     // Only proceed if loading is actually complete or forced
     if (forceComplete || loadingComplete) {
-      setIsLoading(false);
+      // Start transition sequence
+      setShowTransition(true);
+      
+      // Fade out loading screen
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   };
 
@@ -56,10 +63,12 @@ function App() {
   if (isLoading) {
     return (
       <ThemeProvider>
-        <LoadingScreen 
-          onLoadingComplete={handleLoadingComplete}
-          onProgressUpdate={handleLoadingProgress}
-        />
+        <div className={`transition-all duration-1000 ${showTransition ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+          <LoadingScreen 
+            onLoadingComplete={handleLoadingComplete}
+            onProgressUpdate={handleLoadingProgress}
+          />
+        </div>
       </ThemeProvider>
     );
   }
@@ -67,7 +76,8 @@ function App() {
   return (
     <ThemeProvider>
       <div
-        className="min-h-screen bg-white dark:bg-slate-900 transition-all duration-1000 relative opacity-100"
+        className="min-h-screen bg-white dark:bg-slate-900 transition-all duration-1000 relative opacity-0 animate-fade-in-up"
+        style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
       >
         <ScrollAnimations />
         <Header />

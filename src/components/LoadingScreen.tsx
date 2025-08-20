@@ -62,9 +62,11 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete, onProg
   // Handle completion when both progress and animations are done
   useEffect(() => {
     if (isComplete && canProceed) {
+      // Add completion effects before transitioning
+      setPhase(4); // Set to completion phase
       const finalTimeout = setTimeout(() => {
         onLoadingComplete();
-      }, 500);
+      }, 800); // Slightly longer delay for completion effects
       return () => clearTimeout(finalTimeout);
     }
   }, [isComplete, canProceed, onLoadingComplete]);
@@ -81,7 +83,8 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete, onProg
     { text: 'Initializing Systems...', duration: 2000 },
     { text: 'Loading Navigation...', duration: 1800 },
     { text: 'Preparing Interface...', duration: 1500 },
-    { text: 'Finalizing Setup...', duration: 1200 }
+    { text: 'Finalizing Setup...', duration: 1200 },
+    { text: 'Mission Ready - Launching...', duration: 800 }
   ];
 
   return (
@@ -169,53 +172,79 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete, onProg
         {/* Phase Text */}
         <div className="mb-8 h-8 transition-all duration-500">
           <p className="text-xl text-blue-300 font-mono tracking-wide animate-fade-in-space">
-            {phases[phase]?.text || 'Ready for Launch...'}
+            {phases[phase]?.text || 'Mission Ready - Launching...'}
           </p>
         </div>
 
         {/* Progress Bar */}
         <div className="w-96 max-w-sm mx-auto mb-8">
           <div className="flex justify-between text-sm text-gray-400 mb-3 font-mono">
-            <span>{isComplete ? 'MISSION COMPLETE' : 'MISSION PROGRESS'}</span>
+            <span className={`transition-all duration-500 ${isComplete ? 'text-green-400' : ''}`}>
+              {isComplete ? 'MISSION COMPLETE ✓' : 'MISSION PROGRESS'}
+            </span>
             <span>{Math.round(progress)}%</span>
           </div>
           <div className="relative w-full bg-slate-800/50 rounded-full h-3 overflow-hidden border border-blue-500/30">
             <div 
-              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full transition-all duration-300 ease-out relative"
+              className={`h-full rounded-full transition-all duration-300 ease-out relative ${
+                isComplete 
+                  ? 'bg-gradient-to-r from-green-400 via-blue-500 to-cyan-500' 
+                  : 'bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500'
+              }`}
               style={{ width: `${progress}%` }}
             >
               <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent ${progress < 100 ? 'animate-shimmer-space' : ''}`} />
             </div>
-            <div className="absolute right-0 top-0 w-1 h-full bg-cyan-400 opacity-75 animate-pulse" />
+            <div className={`absolute right-0 top-0 w-1 h-full opacity-75 animate-pulse transition-colors duration-500 ${
+              isComplete ? 'bg-green-400' : 'bg-cyan-400'
+            }`} />
           </div>
         </div>
 
         {/* System Status */}
         <div className="grid grid-cols-3 gap-4 mb-8 text-xs font-mono">
           <div className="flex items-center justify-center space-x-2 bg-slate-800/30 rounded-lg p-2 border border-blue-500/20">
-            <div className={`w-2 h-2 rounded-full animate-pulse ${progress > 25 ? 'bg-green-400' : 'bg-yellow-400'}`} />
-            <span className="text-green-400">SYS</span>
+            <div className={`w-2 h-2 rounded-full animate-pulse transition-colors duration-500 ${
+              progress > 25 ? 'bg-green-400' : 'bg-yellow-400'
+            }`} />
+            <span className={`transition-colors duration-500 ${progress > 25 ? 'text-green-400' : 'text-yellow-400'}`}>SYS</span>
           </div>
           <div className="flex items-center justify-center space-x-2 bg-slate-800/30 rounded-lg p-2 border border-purple-500/20">
-            <div className={`w-2 h-2 rounded-full animate-pulse delay-500 ${progress > 50 ? 'bg-blue-400' : 'bg-yellow-400'}`} />
-            <span className="text-blue-400">NAV</span>
+            <div className={`w-2 h-2 rounded-full animate-pulse delay-500 transition-colors duration-500 ${
+              progress > 50 ? 'bg-blue-400' : 'bg-yellow-400'
+            }`} />
+            <span className={`transition-colors duration-500 ${progress > 50 ? 'text-blue-400' : 'text-yellow-400'}`}>NAV</span>
           </div>
           <div className="flex items-center justify-center space-x-2 bg-slate-800/30 rounded-lg p-2 border border-cyan-500/20">
-            <div className={`w-2 h-2 rounded-full animate-pulse delay-1000 ${progress > 75 ? 'bg-cyan-400' : 'bg-yellow-400'}`} />
-            <span className="text-cyan-400">COM</span>
+            <div className={`w-2 h-2 rounded-full animate-pulse delay-1000 transition-colors duration-500 ${
+              progress > 75 ? 'bg-cyan-400' : 'bg-yellow-400'
+            }`} />
+            <span className={`transition-colors duration-500 ${progress > 75 ? 'text-cyan-400' : 'text-yellow-400'}`}>COM</span>
           </div>
         </div>
 
         {/* Loading Indicators */}
-        <div className="flex justify-center space-x-3 mb-8">
+        <div className={`flex justify-center space-x-3 mb-8 transition-all duration-500 ${
+          isComplete ? 'opacity-50' : 'opacity-100'
+        }`}>
           {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className="w-2 h-2 bg-blue-400 rounded-full animate-pulse-sequence"
+              className={`w-2 h-2 rounded-full animate-pulse-sequence transition-colors duration-500 ${
+                isComplete ? 'bg-green-400' : 'bg-blue-400'
+              }`}
               style={{ animationDelay: `${i * 300}ms` }}
             />
           ))}
         </div>
+
+        {/* Completion Message */}
+        {isComplete && (
+          <div className="animate-fade-in-space text-center">
+            <p className="text-green-400 font-mono text-lg mb-2">✓ ALL SYSTEMS OPERATIONAL</p>
+            <p className="text-gray-400 font-mono text-sm">Initiating portfolio interface...</p>
+          </div>
+        )}
       </div>
 
       {/* Skip Button */}
