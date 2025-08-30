@@ -3,16 +3,12 @@ import { Zap } from 'lucide-react';
 
 interface LoadingScreenProps {
   onLoadingComplete: () => void;
-  onProgressUpdate: (isComplete: boolean) => void;
 }
 
-const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete, onProgressUpdate }) => {
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
   const [progress, setProgress] = useState(0);
   const [phase, setPhase] = useState(0);
   const [showSkip, setShowSkip] = useState(false);
-  const [audioEnabled, setAudioEnabled] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
-  const [canProceed, setCanProceed] = useState(false);
 
   useEffect(() => {
     const phases = [
@@ -23,60 +19,44 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete, onProg
     ];
 
     let currentPhase = 0;
+    let progressValue = 0;
+    
     const phaseInterval = setInterval(() => {
       if (currentPhase < phases.length - 1) {
         currentPhase++;
         setPhase(currentPhase);
       }
-    }, phases[0].duration / phases.length);
+    }, 1500);
 
     // Show skip button after 3 seconds
     const skipTimer = setTimeout(() => setShowSkip(true), 3000);
     
     // Progress bar animation
     const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = prev + 1.5;
-        if (newProgress >= 100) {
-          clearInterval(progressInterval);
-          setIsComplete(true);
-          onProgressUpdate(true);
-          // Wait for all animations to complete before allowing proceed
-          setTimeout(() => {
-            setCanProceed(true);
-          }, 2000);
-          return 100;
-        }
-        onProgressUpdate(false);
-        return newProgress;
-      });
-    }, 50);
+      progressValue += 1.2;
+      setProgress(progressValue);
+      
+      if (progressValue >= 100) {
+        clearInterval(progressInterval);
+        clearInterval(phaseInterval);
+        clearTimeout(skipTimer);
+        
+        // Complete loading after a brief delay
+        setTimeout(() => {
+          onLoadingComplete();
+        }, 1500);
+      }
+    }, 60);
 
     return () => {
       clearInterval(phaseInterval);
       clearTimeout(skipTimer);
       clearInterval(progressInterval);
     };
-  }, []);
-
-  // Handle completion when both progress and animations are done
-  useEffect(() => {
-    if (isComplete && canProceed) {
-      // Add completion effects before transitioning
-      setPhase(4); // Set to completion phase
-      const finalTimeout = setTimeout(() => {
-        onLoadingComplete();
-      }, 800); // Slightly longer delay for completion effects
-      return () => clearTimeout(finalTimeout);
-    }
-  }, [isComplete, canProceed, onLoadingComplete]);
+  }, [onLoadingComplete]);
 
   const skipLoading = () => {
-    setProgress(100);
-    setIsComplete(true);
-    onProgressUpdate(true);
-    setCanProceed(true);
-    setTimeout(() => onLoadingComplete(), 300);
+    onLoadingComplete();
   };
 
   const phases = [
@@ -239,7 +219,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete, onProg
         </div>
 
         {/* Completion Message */}
-        {isComplete && (
+        {progress >= 100 && (
           <div className="animate-fade-in-space text-center">
             <p className="text-green-400 font-mono text-lg mb-2">✓ ALL SYSTEMS OPERATIONAL</p>
             <p className="text-gray-400 font-mono text-sm">Initiating portfolio interface...</p>

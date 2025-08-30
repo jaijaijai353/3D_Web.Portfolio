@@ -15,8 +15,6 @@ import SkeletonLoader from './components/SkeletonLoader';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingComplete, setLoadingComplete] = useState(false);
-  const [showTransition, setShowTransition] = useState(false);
   const [splineLoaded, setSplineLoaded] = useState(true);
 
   useEffect(() => {
@@ -43,32 +41,14 @@ function App() {
     optimizeLoad();
   }, []);
 
-  const handleLoadingComplete = (forceComplete = false) => {
-    // Only proceed if loading is actually complete or forced
-    if (forceComplete || loadingComplete) {
-      // Start transition sequence
-      setShowTransition(true);
-      
-      // Fade out loading screen
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    }
-  };
-
-  const handleLoadingProgress = (isComplete: boolean) => {
-    setLoadingComplete(isComplete);
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
   };
 
   if (isLoading) {
     return (
       <ThemeProvider>
-        <div className={`transition-all duration-1000 ${showTransition ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
-          <LoadingScreen 
-            onLoadingComplete={handleLoadingComplete}
-            onProgressUpdate={handleLoadingProgress}
-          />
-        </div>
+        <LoadingScreen onLoadingComplete={handleLoadingComplete} />
       </ThemeProvider>
     );
   }
