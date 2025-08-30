@@ -9,6 +9,8 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
   const [progress, setProgress] = useState(0);
   const [phase, setPhase] = useState(0);
   const [showSkip, setShowSkip] = useState(false);
+  
+  const isComplete = progress >= 100;
 
   useEffect(() => {
     const phases = [
