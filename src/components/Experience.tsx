@@ -1,36 +1,50 @@
 import React from 'react';
-import { Calendar, MapPin, Building, TrendingUp } from 'lucide-react';
+import { Calendar, MapPin, Building, TrendingUp, Users } from 'lucide-react';
 
 const Experience: React.FC = () => {
   const experiences = [
+    {
+      company: 'Google',
+      position: 'Student Ambassador',
+      location: 'Remote',
+      duration: 'Aug 2025 - Dec 2025',
+      description: [
+        'Selected to represent Google on campus, fostering a community of student developers.',
+        'Hosted technical workshops and events on Google technologies like Firebase and Google Cloud.',
+        'Acted as a liaison between the student body and Google, providing valuable feedback.',
+        'Mentored peers and promoted learning through tech talks and study jams.'
+      ],
+      logo: TrendingUp, // Using TrendingUp for an ambassador/growth role
+      color: 'from-yellow-500 to-orange-500'
+    },
+    {
+      company: 'Google Developer Student Clubs',
+      position: 'Team Lead',
+      location: 'Sonipat, India', // Assuming campus location
+      duration: 'Aug 2023 - April 2024',
+      description: [
+        'Led a core team to organize hackathons, coding workshops, and speaker sessions.',
+        'Managed club operations, including member recruitment, event logistics, and social media outreach.',
+        'Successfully grew active club membership by 50% through strategic initiatives.',
+        'Fostered a collaborative environment that helped students build real-world projects.'
+      ],
+      logo: Users, // Using a 'Users' icon for a community lead role
+      color: 'from-red-500 to-red-600'
+    },
     {
       company: 'Cognizen Innovation',
       position: 'Marketing & Finance Intern',
       location: 'Ghaziabad, India',
       duration: 'June 2023 - August 2023',
       description: [
-        'Analyzed marketing campaign performance data using Excel and Power BI',
-        'Created automated financial reporting dashboards',
-        'Improved data processing efficiency by 30% through process optimization',
-        'Collaborated with cross-functional teams to deliver actionable insights'
+        'Analyzed marketing campaign performance data using Excel and Power BI.',
+        'Created automated financial reporting dashboards to track key metrics.',
+        'Improved data processing efficiency by 30% through process optimization.',
+        'Collaborated with cross-functional teams to deliver actionable insights.'
       ],
       logo: Building,
       color: 'from-blue-500 to-blue-600'
     },
-    {
-      company: 'Deloitte',
-      position: 'Data Analyst Simulation (Virtual Internship)',
-      location: 'Remote',
-      duration: 'March 2023 - May 2023',
-      description: [
-        'Completed comprehensive data analysis projects using Python and SQL',
-        'Developed interactive dashboards for client presentations',
-        'Performed statistical analysis and data visualization',
-        'Delivered insights that influenced strategic business decisions'
-      ],
-      logo: TrendingUp,
-      color: 'from-green-500 to-green-600'
-    }
   ];
 
   return (
