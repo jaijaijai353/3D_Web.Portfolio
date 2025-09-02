@@ -22,12 +22,13 @@ const Projects: React.FC = () => {
       link: 'https://github.com/jaijaijai353/Netflix-EDA-Analysis'
     },
     {
-      title: 'Inventory Management System',
-      description: 'SQL-based inventory tracking system with automated reporting, stock level monitoring, and supplier performance analysis.',
-      tech: ['SQL', 'MySQL', 'Python', 'Tableau'],
-      icon: Database,
-      color: 'from-green-500 to-green-600',
-      image: 'https://images.pexels.com/photos/1181677/pexels-photo-1181677.jpeg?auto=compress&cs=tinysrgb&w=800'
+      title: 'NIKA',
+      description: 'A data analytics model which can clean, analyze, and visualize data, providing actionable insights through an interactive interface.',
+      tech: ['Python', 'Streamlit', 'Pandas', 'Matplotlib'],
+      icon: BarChart3, // Using BarChart3 as it fits data visualization
+      color: 'from-purple-500 to-indigo-600',
+      image: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800',
+      link: 'https://nika-xi.vercel.app/'
     }
   ];
 
