@@ -4,6 +4,19 @@ import { Calendar, MapPin, Building, TrendingUp, Users } from 'lucide-react';
 const Experience: React.FC = () => {
   const experiences = [
     {
+      company: 'Jaro Education',
+      position: 'Graduate Trainee (Sales & CRM Analytics)',
+      location: 'EdTech',
+      duration: 'Jan 2026 - March 2026',
+      description: [
+        'Orchestrated end-to-end CRM lead pipeline across 3+ EdTech verticals in LeadSquared — segmented 100+ weekly leads by program fit, budget tier, and enrollment intent; diagnosed conversion patterns by lead source to sharpen outreach prioritization and boost pipeline efficiency.',
+        'Architected a monthly Power BI dashboard to track personal KRAs and prospect conversion metrics — visualized outreach volume, conversion rate trends, and pipeline stage movement; leveraged insights to drive self-directed performance improvement and refine pitch strategy.',
+        'Drove 250+ daily outreach touchpoints sustaining 2.5+ hours of prospect talk time — tracked 6 daily qualified conversions, benchmarked closure rates across lead sources, and iteratively refined personal lead scoring criteria to maximize conversion yield.'
+      ],
+      logo: TrendingUp,
+      color: 'from-green-500 to-green-600'
+    },
+    {
       company: 'Google',
       position: 'Student Ambassador',
       location: 'Remote',
